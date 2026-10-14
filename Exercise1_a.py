@@ -17,10 +17,18 @@ prices = pd.read_csv(
 # Drop any fully-empty rows (the sheet sometimes has a trailing blanks)
 prices = prices.dropna(how = "All")
 print ("Shape:", prices.shape)
-print("Columns ")
-def fetch_data(start: datetime,end:datetime)->pd.DateFrame:
-    data = yf.download(symbols, start = start, end=end, progress=False)
+print("Columns: ", list(prices.columns))
+print("Date Range: ", prices.index[0].date(), "to", prices.index[-1].date())
+print(prices.head())
 
-    return data.dropna("all")
 
+# ============= Now Compute Daily Simple returns ====================================
+
+# The formula is r_{i,k} = (S_i(t_k) - S_i(t_{k-1})) / S_i(t_{k-1})
+returns = prices.pct_change().dropna(how = "All")
+print("\nReturns shape: ", returns.shape) # Expect (750,5) now
+
+# ================= Now Sample moments (per stock) ===================================
+
+mu_hat = returns.mean()
 
